@@ -1,4 +1,14 @@
-git checkout $BRANCH
+if git ls-remote --exit-code --heads origin $BRANCH; then
+  echo "Branch $BRANCH found"
+  git checkout $BRANCH
+else
+  echo "Branch $BRANCH not found, creating branch"
+  git checkout -B $BRANCH
+  git push -u origin $BRANCH
+fi
+
+echo "Current branch:"
+git branch --show-current
 
 echo "Installing Theme Kit"
 curl -s https://shopify.github.io/themekit/scripts/install.py | sudo python
