@@ -8,8 +8,6 @@ runs:
     - name: Check if ${{ env.branch }} exists
       shell: bash
       run: ${{ github.action_path }}/createbranch.sh
-      env:
-        BRANCH: ${{ env.branch }}
 
     # Update.
     - name: Check if ${{ env.branch }} exists
