@@ -4,6 +4,13 @@ runs:
   using: "composite"
   steps: 
 
+    # Configure git.
+    - name: Configure git
+      shell: bash
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+
     # Create a new branch from it if it doesn't already exist.
     - name: Check if ${{ env.branch }} exists
       shell: bash
