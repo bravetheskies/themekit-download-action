@@ -9,20 +9,8 @@ runs:
 
     # Create a new branch from it if it doesn't already exist.
     - name: Check if ${{ env.branch }} exists
-      id: branch_exists
-      run: |
-        if git ls-remote --exit-code --heads origin ${{ env.branch }}; then
-          echo "::set-output name=branch_exists::1"
-          echo "Branch found"
-        else
-          echo "::set-output name=branch_exists::0"
-          echo "Branch not found"
-        fi
-    - name: Create missing branch
-      if: steps.branch_exists.outputs.branch_exists == 0
-      run: |
-        git checkout -B ${{ env.branch }}
-        git push -u origin ${{ env.branch }}
+      shell: bash
+      run: ${{ github.action_path }}/createbranch.sh
 
     # Now we checkout the new branch.
     - name: Checkout ${{ env.branch }}
