@@ -1,0 +1,70 @@
+name: 'Shopify Theme Download'
+description: 'Pulls changes from Shopify Theme Kit themes'
+runs:
+  using: "composite"
+  steps: 
+    # Checkout the master branch.
+    - name: Checkout master
+      uses: actions/checkout@v2
+
+    # Create a new branch from it if it doesn't already exist.
+    - name: Check if ${{ env.branch }} exists
+      id: branch_exists
+      run: |
+        if git ls-remote --exit-code --heads origin ${{ env.branch }}; then
+          echo "::set-output name=branch_exists::1"
+          echo "Branch found"
+        else
+          echo "::set-output name=branch_exists::0"
+          echo "Branch not found"
+        fi
+    - name: Create missing branch
+      if: steps.branch_exists.outputs.branch_exists == 0
+      run: |
+        git checkout -B ${{ env.branch }}
+        git push -u origin ${{ env.branch }}
+
+    # Now we checkout the new branch.
+    - name: Checkout ${{ env.branch }}
+      uses: actions/checkout@v2
+      with:
+        ref: ${{ env.branch }}
+
+    # Install themekit.
+    - name: Install themekit
+      run: curl -s https://shopify.github.io/themekit/scripts/install.py | sudo python
+
+    # Confiure themekit and git ready to push.
+    - name: Configure theme
+      run: theme configure --password=${{ secrets.SHOPIFY_APP_API_PASSWORD }} --store=${{ secrets.SHOPIFY_STORE_URL }} --themeid=${{ secrets.SHOPIFY_THEME_ID }} --dir=${{ secrets.THEME_PATH }} --ignored-file=config/settings_data.json --ignored-file=locales/*
+    - name: Configure git
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+
+    # Get all files from the live theme and add any missing to the repo.
+    - name: Download theme files
+      run: theme download
+    - name: Git add
+      run: git add .
+    - name: Look for changes
+      id: changes
+      run: |
+        if ! git diff-index --quiet HEAD --; then
+          echo "::set-output name=changes::1"
+        fi
+
+    # Commit and push if changes are found.
+    - name: Commit changes
+      if: steps.changes.outputs.changes == 1
+      run: git commit -m "Changes from live on CI run $GITHUB_RUN_NUMBER"
+    - name: Push changes
+      if: steps.changes.outputs.changes == 1
+      run: git push
+
+    # Create pull request if required
+    - name: Create pull request
+      if: steps.changes.outputs.changes == 1
+      run: hub pull-request --no-edit
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
