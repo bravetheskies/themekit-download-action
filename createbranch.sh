@@ -1,7 +1,7 @@
-if git ls-remote --exit-code --heads origin ${{ env.branch }}; then
+if git ls-remote --exit-code --heads origin $BRANCH; then
   echo "Branch found"
 else
   echo "Branch not found"
-  git checkout -B ${{ env.branch }}
-  git push -u origin ${{ env.branch }}
+  git checkout -B $BRANCH
+  git push -u origin $BRANCH
 fi
