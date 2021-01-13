@@ -1,5 +1,8 @@
+#!/bin/bash
+
 if git ls-remote --exit-code --heads origin $BRANCH; then
   echo "Branch $BRANCH found"
+  git fetch
   git checkout $BRANCH
 else
   echo "Branch $BRANCH not found, creating branch"
