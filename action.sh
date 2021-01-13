@@ -28,10 +28,11 @@ if ! git diff-index --quiet HEAD --; then
   echo "Changes found, commiting and pushing"
   git commit -m "$GITHUB_WORKFLOW #$GITHUB_RUN_NUMBER"
   git push
-  if hub pull-request --no-edit; then
-	  echo "Pull request created"
+  if hub pr list -h $BRANCH | grep "#"; then
+    echo "Pull request already exists"
   else
-    echo "Pull request already create (or there was another error)"
+    echo "Pull request doesn't exist"
+    hub pull-request --no-edit
   fi
 else
   echo "No changes found"
