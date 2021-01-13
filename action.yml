@@ -1,5 +1,8 @@
 name: 'Shopify Theme Download'
 description: 'Pulls changes from Shopify Theme Kit themes'
+branding:
+  icon: 'download'  
+  color: 'green'
 runs:
   using: "composite"
   steps: 
