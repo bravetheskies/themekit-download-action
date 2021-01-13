@@ -11,8 +11,7 @@ else
   git push -u origin $BRANCH
 fi
 
-echo "Current branch:"
-git branch --show-current
+echo "Current branch: $(git branch --show-current)"
 
 echo "Installing Theme Kit"
 curl -s https://shopify.github.io/themekit/scripts/install.py | sudo python
@@ -27,7 +26,7 @@ git add .
 
 if ! git diff-index --quiet HEAD --; then
   echo "Changes found, commiting and pushing"
-  git commit -m "Changes from live on CI run $GITHUB_RUN_NUMBER"
+  git commit -m "$GITHUB_WORKFLOW #$GITHUB_RUN_NUMBER"
   git push
   hub pull-request --no-edit
 else
