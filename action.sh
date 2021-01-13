@@ -2,8 +2,7 @@
 
 if git ls-remote --exit-code --heads origin $BRANCH; then
   echo "Branch $BRANCH found"
-  git fetch
-  git checkout $BRANCH
+  git checkout --track origin/$BRANCH
 else
   echo "Branch $BRANCH not found, creating branch"
   git checkout -B $BRANCH
