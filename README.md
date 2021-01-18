@@ -10,6 +10,19 @@ A GitHub action that pulls changes from Shopify Theme Kit themes.
 
 ## Usage
 
+The action requires the following environment variables to run.
+
+* `BRANCH` - The branch name for the changes to be committed to.
+* `SHOPIFY_APP_API_PASSWORD` - API password for your Shopify app.
+* `SHOPIFY_STORE_URL` - The store URL in format `my-store.myshopify.com` of your store.
+* `SHOPIFY_THEME_ID` - The ID of the theme to deploy to.
+* `THEME_PATH` - The path of your theme in your repository. If root use `./`.
+* `THEMEKIT_FLAGS` (optional) - [Shopify Theme Kit configuration flags](https://shopify.github.io/themekit/configuration/#flags).
+
+It is recommended that you use [encrypted secrets](https://docs.github.com/en/actions/reference/encrypted-secrets#creating-encrypted-secrets-for-a-repository) for your environment details.
+
+They can easily be used in your workflow configuration like so:
+
 ```yml
 - uses: bravetheskies/themekit-download-action@latest
   env:
