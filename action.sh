@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+main_branch=$(git symbolic-ref --short HEAD)
+
 if git ls-remote --exit-code --heads origin $BRANCH; then
   echo "Branch $BRANCH found"
   git fetch
@@ -32,7 +34,7 @@ if ! git diff-index --quiet HEAD --; then
     echo "Pull request already exists"
   else
     echo "Pull request doesn't exist"
-    hub pull-request --no-edit
+    hub pull-request --no-edit --base=$main_branch
   fi
 else
   echo "No changes found"
