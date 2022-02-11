@@ -34,7 +34,7 @@ if ! git diff-index --quiet HEAD --; then
     echo "Pull request already exists"
   else
     echo "Pull request doesn't exist"
-    hub pull-request --no-edit --base=$main_branch
+    hub pull-request --no-edit --base=$main_branch --message="$GITHUB_WORKFLOW"
   fi
 else
   echo "No changes found"
